@@ -1,5 +1,5 @@
 /* Libvisual - The audio visualisation framework.
- * 
+ *
  * Copyright (C) 2004, 2005, 2006 Dennis Smit <ds@nerds-incorporated.org>
  *
  * Authors: Dennis Smit <ds@nerds-incorporated.org>
@@ -26,17 +26,20 @@
 
 #include <libvisual/lv_beat.h>
 #include <libvisual/lv_time.h>
+#include <libvisual/lv_list.h>
 #include <libvisual/lv_ringbuffer.h>
+#include <libvisual/lv_buffer.h>
+
 
 /**
  * @defgroup VisAudio VisAudio
  * @{
  */
 
-#define VISUAL_AUDIO(obj)				(VISUAL_CHECK_CAST ((obj), VisAudio))
-#define VISUAL_AUDIO_SAMPLEPOOL(obj)			(VISUAL_CHECK_CAST ((obj), VisAudioSamplePool))
-#define VISUAL_AUDIO_SAMPLEPOOL_CHANNEL(obj)		(VISUAL_CHECK_CAST ((obj), VisAudioSamplePoolChannel))
-#define VISUAL_AUDIO_SAMPLE(obj)			(VISUAL_CHECK_CAST ((obj), VisAudioSample))
+#define VISUAL_AUDIO(obj)                       (VISUAL_CHECK_CAST ((obj), VisAudio))
+#define VISUAL_AUDIO_SAMPLEPOOL(obj)            (VISUAL_CHECK_CAST ((obj), VisAudioSamplePool))
+#define VISUAL_AUDIO_SAMPLEPOOL_CHANNEL(obj)    (VISUAL_CHECK_CAST ((obj), VisAudioSamplePoolChannel))
+#define VISUAL_AUDIO_SAMPLE(obj)                (VISUAL_CHECK_CAST ((obj), VisAudioSample))
 
 #define VISUAL_AUDIO_CHANNEL_LEFT	"front left 1"
 #define VISUAL_AUDIO_CHANNEL_RIGHT	"front right 1"
@@ -89,53 +92,37 @@ typedef struct _VisAudioSample VisAudioSample;
  * @see visual_audio_new
  */
 struct _VisAudio {
-	VisObject		 object;			/**< The VisObject data. */
+	VisObject           object;          /**< The VisObject data. */
 
-	VisAudioSamplePool	*samplepool;
-	short			 plugpcm[2][512];		/**< PCM data that comes from the input plugin
-								 * or a callback function. */
-//	short			 pcm[3][512];			/**< PCM data that should be used within plugins
-//								 * pcm[0][x] is the left channel, pcm[1][x] is the right
-//								 * channel and pcm[2][x] is an average of both channels. */
-//	short			 freq[3][256];			/**< Rateuency data as a 256 bands analyzer, with the channels
-//								 * like with the pcm element. */
-//	short			 freqnorm[3][256];		/**< Rateuency data like the freq member, however this time the bands
-//								 * are normalized. */
-
-//	short int		 bpmhistory[1024][6];		/**< Private member for BPM detection, not implemented right now. */
-//	short int		 bpmdata[1024][6];		/**< Private member for BPM detection, not implemented right now. */
-//	short int		 bpmenergy[6];			/**< Private member for BPM detection, not implemented right now. */
-	int			 energy;			/**< Audio energy level. */
-	VisBeat			*beat; 				/**< Beat per minute. */
+	VisAudioSamplePool* samplepool;
+	short               plugpcm[2][512]; /**< PCM data that comes from the input plugin or a callback function. */
+	int                 energy;          /**< Audio energy level. */
+	VisBeat*            beat;            /**< Beat per minute. */
 };
 
 struct _VisAudioSamplePool {
-	VisObject	 object;
-
-	VisList		*channels;
+	VisObject object;
+	VisList*  channels;
 };
 
 struct _VisAudioSamplePoolChannel {
-	VisObject	 object;
+	VisObject      object;
 
-	VisRingBuffer	*samples;
-	VisTime		    *samples_timeout;
-
-	char		*channelid;
-
-	float		 factor;
+	VisRingBuffer* samples;
+	VisTime*       samples_timeout;
+	char*          channelid;
+	float          factor;
 };
 
 struct _VisAudioSample {
-	VisObject			 object;
+	VisObject                object;
 
-	VisTime				*timestamp;
+	VisTime*                 timestamp;
+	VisAudioSampleRateType   rate;
+	VisAudioSampleFormatType format;
 
-	VisAudioSampleRateType		 rate;
-	VisAudioSampleFormatType	 format;
-
-	VisBuffer			*buffer;
-	VisBuffer			*processed;
+	VisBuffer*               buffer;
+	VisBuffer*               processed;
 };
 
 LV_BEGIN_DECLS
@@ -238,10 +225,10 @@ LV_API VisBeat *visual_audio_get_beat(VisAudio *audio);
  * Adv algorithm adapted from the Blursk plugin for xmms.
  * See lv_beat.h for copyright details.
  */
-LV_API int visual_audio_is_beat(VisAudio *audio, VisBeatAlgorithm algo);
+LV_API int visual_audio_is_beat (VisAudio *audio, VisBeatAlgorithm algo);
 
-LV_API int visual_audio_is_beat_with_data(VisAudio *audio, VisBeatAlgorithm algo, unsigned char *data, int size);
-LV_API int visual_audio_get_cheap_audio_data(VisAudio *audio, unsigned char out[2][2][576]);
+LV_API int visual_audio_is_beat_with_data (VisAudio *audio, VisBeatAlgorithm algo, unsigned char *data, int size);
+LV_API int visual_audio_get_cheap_audio_data (VisAudio *audio, unsigned char out[2][2][576]);
 
 LV_END_DECLS
 

@@ -78,7 +78,6 @@ SET(libvisual_SOURCES
   lv_cpu.c
   lv_error.c
   lv_object.c
-  lv_ringbuffer.c
   lv_buffer.c
   lv_collection.c
   lv_os.c
@@ -99,6 +98,7 @@ SET(libvisual_SOURCES
   lv_palette.cpp
   lv_plugin_registry.cpp
   lv_rectangle.cpp
+  lv_ringbuffer.cpp
   lv_songinfo.cpp
   lv_time.cpp
   lv_transform.cpp
@@ -111,6 +111,7 @@ SET(libvisual_SOURCES
   lv_palette_c.cpp
   lv_plugin_registry_c.cpp
   lv_rectangle_c.cpp
+  lv_ringbuffer_c.cpp
   lv_songinfo_c.cpp
   lv_time_c.cpp
 

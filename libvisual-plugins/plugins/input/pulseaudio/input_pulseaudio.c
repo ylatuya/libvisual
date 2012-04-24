@@ -71,11 +71,15 @@ static int inp_pulseaudio_init( VisPluginData *plugin ) {
 
     VisParamContainer *paramcontainer = visual_plugin_get_params(plugin);
 
+#if ENABLE_NLS
+	bindtextdomain (GETTEXT_PACKAGE, LOCALE_DIR);
+#endif
+
     priv = visual_mem_new0(pulseaudio_priv_t, 1);
 
     visual_object_set_private(VISUAL_OBJECT(plugin), priv);
 
-    memset(priv, 0, sizeof(pulseaudio_priv_t));
+    visual_mem_set(priv, 0, sizeof(pulseaudio_priv_t));
 
 
     priv->simple = pa_simple_new(
@@ -166,7 +170,7 @@ int inp_pulseaudio_upload( VisPluginData *plugin, VisAudio *audio )
     VisBuffer buffer;
     int error;
 
-    memset(pcm_data, 0, sizeof(pcm_data));
+    visual_mem_set(pcm_data, 0, sizeof(pcm_data));
 
     visual_return_val_if_fail( audio != NULL, -VISUAL_ERROR_GENERAL);
     visual_return_val_if_fail( plugin != NULL, -VISUAL_ERROR_GENERAL);

@@ -1,6 +1,4 @@
-/* $Id$
- * $URL$
- *
+/*
  * Copyright (C) 2009 Scott Sibley <scott@starlon.net>
  *
  * This file is part of Blurks-libvisual.
@@ -19,13 +17,11 @@
  * along with Blurks-libvisual.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <libvisual/libvisual.h>
+#include "config.h"
+#include "gettext.h"
 #include "actor_blursk.h"
 #include "blursk.h"
-
-#include <string.h>
-#include <stddef.h>
-#include <stdlib.h>
+#include <libvisual/libvisual.h>
 #include <limits.h>
 
 VISUAL_PLUGIN_API_VERSION_VALIDATOR
@@ -51,11 +47,11 @@ const VisPluginInfo *get_plugin_info (void)
                 .type = VISUAL_PLUGIN_TYPE_ACTOR,
 
                 .plugname = "blursk",
-                .name = "blursk plugin",
+                .name = "Blursk plugin",
                 .author = "Read AUTHORS",
                 .version = "0.0.1",
-                .about = "blursk visual plugin",
-                .help = "This is the libvisual port of blursk xmms visualization",
+                .about = N_("blursk visual plugin"),
+                .help = N_("This is the libvisual port of blursk xmms visualization"),
                 .license = VISUAL_PLUGIN_LICENSE_GPL,
 
                 .init = act_blursk_init,
@@ -100,6 +96,10 @@ static int act_blursk_init (VisPluginData *plugin) {
         VISUAL_PARAM_LIST_ENTRY_INTEGER ("show_timestamp", TRUE),
         VISUAL_PARAM_LIST_END
     };
+
+#if ENABLE_NLS
+    bindtextdomain (GETTEXT_PACKAGE, LOCALE_DIR);
+#endif
 
     /* init plugin */
     priv = visual_mem_new0 (BlurskPrivate, 1);

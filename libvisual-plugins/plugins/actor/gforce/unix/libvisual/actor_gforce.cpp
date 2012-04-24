@@ -26,26 +26,16 @@
  * and libvisual, the license around G-Force remains very unclear.
  */
 
-#include <config.h>
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <string.h>
-#include <gettext.h>
-
-#include <time.h>
-#include <sys/time.h>
-
-#include <libvisual/libvisual.h>
+#include "config.h"
+#include "gettext.h"
 
 #include "G-Force_Proj.h"
-
 #include "G-Force.h"
 #include "EgOSUtils.h"
 #include "RectUtils.h"
 #include "CEgFileSpec.h"
+
+#include <libvisual/libvisual.h>
 
 VISUAL_PLUGIN_API_VERSION_VALIDATOR
 
@@ -101,10 +91,6 @@ int lv_gforce_init (VisPluginData *plugin)
 {
 	GForcePrivate *priv;
 	Rect r;
-
-#if ENABLE_NLS
-	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
-#endif
 
 	priv = new GForcePrivate;
 	visual_mem_set (priv, 0, sizeof (GForcePrivate));

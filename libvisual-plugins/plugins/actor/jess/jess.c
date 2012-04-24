@@ -1,11 +1,9 @@
 /* Libvisual-plugins - Standard plugins for libvisual
- * 
+ *
  * Copyright (C) 2000, 2001 Remi Arquier <arquier@crans.org>
  *
  * Authors: Remi Arquier <arquier@crans.org>
- *	    Dennis Smit <ds@nerds-incorporated.org>
- *
- * $Id: jess.c,v 1.25 2006/01/27 20:19:14 synap Exp $
+ *          Dennis Smit <ds@nerds-incorporated.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -22,14 +20,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#include <config.h>
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <math.h>
-#include <string.h>
-#include <gettext.h>
+#include "config.h"
+#include "gettext.h"
 
 #include "def.h"
 #include "struct.h"
@@ -92,7 +84,7 @@ static int act_jess_init (VisPluginData *plugin)
 	visual_return_val_if_fail (plugin != NULL, -1);
 
 #if ENABLE_NLS
-	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+	bindtextdomain (GETTEXT_PACKAGE, LOCALE_DIR);
 #endif
 
 	priv = visual_mem_new0 (JessPrivate, 1);

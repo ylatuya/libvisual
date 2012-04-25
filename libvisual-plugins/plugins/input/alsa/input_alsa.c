@@ -87,7 +87,7 @@ int inp_alsa_init (VisPluginData *plugin)
 	unsigned int rate = inp_alsa_var_samplerate;
 	unsigned int exact_rate;
 	unsigned int tmp;
-	int dir;
+	int dir = 0;
 	int err;
 
 #if ENABLE_NLS
@@ -120,7 +120,7 @@ int inp_alsa_init (VisPluginData *plugin)
 
 	if (snd_pcm_hw_params_set_access(priv->chandle, hwparams,
 					 SND_PCM_ACCESS_RW_INTERLEAVED) < 0) {
-		visual_log(VISUAL_LOG_ERROR, _("Error setting access"));
+		visual_log(VISUAL_LOG_ERROR, "Error setting access");
 		snd_pcm_hw_params_free(hwparams);
 		return(-1);
 	}
@@ -132,7 +132,7 @@ int inp_alsa_init (VisPluginData *plugin)
 	if (snd_pcm_hw_params_set_format(priv->chandle, hwparams,
 					 SND_PCM_FORMAT_S16_BE) < 0) {
 #endif
-		visual_log(VISUAL_LOG_ERROR, _("Error setting format"));
+		visual_log(VISUAL_LOG_ERROR, "Error setting format");
 		snd_pcm_hw_params_free(hwparams);
 		return(-1);
 	}
@@ -160,7 +160,7 @@ int inp_alsa_init (VisPluginData *plugin)
 		return(-1);
 	}
 
-       /* Setup a large buffer */
+	/* Setup a large buffer */
 
 	tmp = 1000000;
 	if (snd_pcm_hw_params_set_period_time_near(priv->chandle, hwparams, &tmp, &dir) < 0){
@@ -223,26 +223,13 @@ int inp_alsa_upload (VisPluginData *plugin, VisAudio *audio)
 	priv = visual_object_get_private (VISUAL_OBJECT (plugin));
 	visual_return_val_if_fail(priv != NULL, -1);
 
-#if 0
-	{	/* DEBUG STUFF, REMOVE IN RELEASE FIXME FIXME XXX TODO WHATEVER */
-		VisBuffer buffer;
-
-		visual_buffer_init (&buffer, data, 512, NULL);
-
-		for (i = 0; i < 16; i++) {
-			visual_audio_samplepool_input (audio->samplepool, &buffer, VISUAL_AUDIO_SAMPLE_RATE_44100,
-					VISUAL_AUDIO_SAMPLE_FORMAT_S16, VISUAL_AUDIO_SAMPLE_CHANNEL_STEREO);
-		}
-		return 0;
-	}
-#endif
 	do {
 		rcnt = snd_pcm_readi(priv->chandle, data, PCM_BUF_SIZE / 2);
 
 		if (rcnt > 0) {
 			VisBuffer buffer;
 
-			visual_buffer_init (&buffer, data, rcnt, NULL);
+			visual_buffer_init (&buffer, data, rcnt*2, NULL);
 
 			visual_audio_samplepool_input (audio->samplepool, &buffer, VISUAL_AUDIO_SAMPLE_RATE_44100,
 					VISUAL_AUDIO_SAMPLE_FORMAT_S16, VISUAL_AUDIO_SAMPLE_CHANNEL_STEREO);

@@ -90,12 +90,12 @@ const VisPluginInfo *get_plugin_info (void)
 		.plugin = VISUAL_OBJECT (&actor)
 	};
 
-	VISUAL_VIDEO_ATTRIBUTE_OPTIONS_GL_ENTRY(actor.vidoptions, VISUAL_GL_ATTRIBUTE_RED_SIZE, 5);
-	VISUAL_VIDEO_ATTRIBUTE_OPTIONS_GL_ENTRY(actor.vidoptions, VISUAL_GL_ATTRIBUTE_GREEN_SIZE, 5);
-	VISUAL_VIDEO_ATTRIBUTE_OPTIONS_GL_ENTRY(actor.vidoptions, VISUAL_GL_ATTRIBUTE_BLUE_SIZE, 5);
-	VISUAL_VIDEO_ATTRIBUTE_OPTIONS_GL_ENTRY(actor.vidoptions, VISUAL_GL_ATTRIBUTE_DEPTH_SIZE, 16);
-	VISUAL_VIDEO_ATTRIBUTE_OPTIONS_GL_ENTRY(actor.vidoptions, VISUAL_GL_ATTRIBUTE_DOUBLEBUFFER, 1);
-	VISUAL_VIDEO_ATTRIBUTE_OPTIONS_GL_ENTRY(actor.vidoptions, VISUAL_GL_ATTRIBUTE_RGBA, 1);
+	VISUAL_VIDEO_ATTR_OPTIONS_GL_ENTRY(actor.vidoptions, VISUAL_GL_ATTRIBUTE_RED_SIZE, 5);
+	VISUAL_VIDEO_ATTR_OPTIONS_GL_ENTRY(actor.vidoptions, VISUAL_GL_ATTRIBUTE_GREEN_SIZE, 5);
+	VISUAL_VIDEO_ATTR_OPTIONS_GL_ENTRY(actor.vidoptions, VISUAL_GL_ATTRIBUTE_BLUE_SIZE, 5);
+	VISUAL_VIDEO_ATTR_OPTIONS_GL_ENTRY(actor.vidoptions, VISUAL_GL_ATTRIBUTE_DEPTH_SIZE, 16);
+	VISUAL_VIDEO_ATTR_OPTIONS_GL_ENTRY(actor.vidoptions, VISUAL_GL_ATTRIBUTE_DOUBLEBUFFER, 1);
+	VISUAL_VIDEO_ATTR_OPTIONS_GL_ENTRY(actor.vidoptions, VISUAL_GL_ATTRIBUTE_RGBA, 1);
 
 	return &info;
 }
@@ -262,21 +262,24 @@ static int nastyfft_sound (NastyfftPrivate *priv, VisAudio *audio)
 	int i, c, y;
 	GLfloat val;
 	int xscale[] = { 0, 1, 2, 3, 5, 7, 10, 14, 20, 28, 40, 54, 74, 101, 137, 187, 255 };
-	VisBuffer buffer;
-	VisBuffer pcmb;
+	VisBuffer *buffer;
+	VisBuffer *pcmb;
 
 	float freq[256];
 	unsigned short rfreq[256];
 	float pcm[256];
 
-	visual_buffer_set_data_pair (&buffer, freq, sizeof (freq));
-	visual_buffer_set_data_pair (&pcmb, pcm, sizeof (pcm));
+	buffer = visual_buffer_new_wrap_data (freq, sizeof (freq));
+    pcmb   = visual_buffer_new_wrap_data (pcm, sizeof (pcm));
 
-	visual_audio_get_sample_mixed_simple (audio, &pcmb, 2,
+	visual_audio_get_sample_mixed_simple (audio, pcmb, 2,
 			VISUAL_AUDIO_CHANNEL_LEFT,
 			VISUAL_AUDIO_CHANNEL_RIGHT);
 
-	visual_audio_get_spectrum_for_sample (&buffer, &pcmb, TRUE);
+	visual_audio_get_spectrum_for_sample (buffer, pcmb, TRUE);
+
+    visual_buffer_free (buffer);
+    visual_buffer_free (pcmb);
 
 	for (i = 0; i < 256; i++)
 		rfreq[i] = freq[i] * 320000.0;

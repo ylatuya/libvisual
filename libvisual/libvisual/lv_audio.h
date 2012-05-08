@@ -24,7 +24,6 @@
 #ifndef _LV_AUDIO_H
 #define _LV_AUDIO_H
 
-#include <libvisual/lv_beat.h>
 #include <libvisual/lv_time.h>
 #include <libvisual/lv_list.h>
 #include <libvisual/lv_ringbuffer.h>
@@ -84,20 +83,9 @@ typedef struct _VisAudioSamplePool VisAudioSamplePool;
 typedef struct _VisAudioSamplePoolChannel VisAudioSamplePoolChannel;
 typedef struct _VisAudioSample VisAudioSample;
 
-/**
- * The VisAudio structure contains the sample and extra information
- * about the sample like a 256 bands analyzer, sound energy and
- * in the future BPM detection.
- *
- * @see visual_audio_new
- */
 struct _VisAudio {
-	VisObject           object;          /**< The VisObject data. */
-
-	VisAudioSamplePool* samplepool;
-	short               plugpcm[2][512]; /**< PCM data that comes from the input plugin or a callback function. */
-	int                 energy;          /**< Audio energy level. */
-	VisBeat*            beat;            /**< Beat per minute. */
+	VisObject            object;
+	VisAudioSamplePool	*samplepool;
 };
 
 struct _VisAudioSamplePool {
@@ -148,20 +136,6 @@ LV_API VisAudio *visual_audio_new (void);
  */
 LV_API int visual_audio_init (VisAudio *audio);
 
-/**
- * This function analyzes the VisAudio, the Fourier frequency magic gets done here, also
- * the audio energy is calculated and some other magic to provide the developer more
- * information about the current sample and the stream.
- *
- * For every sample that is being retrieved this needs to be called. However keep in mind
- * that the VisBin runs it automaticly.
- *
- * @param audio Pointer to a VisAudio that needs to be analyzed.
- *
- * @return VISUAL_OK on success, -VISUAL_ERROR_AUDIO_NULL on failure.
- */
-LV_API int visual_audio_analyze (VisAudio *audio);
-
 LV_API int visual_audio_get_sample (VisAudio *audio, VisBuffer *buffer, const char *channelid);
 LV_API int visual_audio_get_sample_mixed_simple (VisAudio *audio, VisBuffer *buffer, int channels, ...);
 LV_API int visual_audio_get_sample_mixed (VisAudio *audio, VisBuffer *buffer, int divide, int channels, ...);
@@ -211,24 +185,6 @@ LV_API int visual_audio_sample_transform_rate (VisAudioSample *dest, VisAudioSam
 LV_API int visual_audio_sample_rate_get_length (VisAudioSampleRateType rate);
 LV_API int visual_audio_sample_format_get_size (VisAudioSampleFormatType format);
 LV_API int visual_audio_sample_format_is_signed (VisAudioSampleFormatType format);
-
-LV_API VisBeat *visual_audio_get_beat(VisAudio *audio);
-
-/**
- * Get the value indicating if we have a beat or not.
- *
- * @param audio The audio from which we want a beat.
- *
- * @return 0 or 1 on success, -VISUAL_ERROR_AUDIO_NULL on failure
- *
- * Peak algorithm adapted from Winamp's AVS plugin.
- * Adv algorithm adapted from the Blursk plugin for xmms.
- * See lv_beat.h for copyright details.
- */
-LV_API int visual_audio_is_beat (VisAudio *audio, VisBeatAlgorithm algo);
-
-LV_API int visual_audio_is_beat_with_data (VisAudio *audio, VisBeatAlgorithm algo, unsigned char *data, int size);
-LV_API int visual_audio_get_cheap_audio_data (VisAudio *audio, unsigned char out[2][2][576]);
 
 LV_END_DECLS
 

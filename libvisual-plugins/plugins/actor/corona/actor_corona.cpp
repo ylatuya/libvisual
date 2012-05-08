@@ -262,12 +262,13 @@ int lv_corona_render (VisPluginData *plugin, VisVideo *video, VisAudio *audio)
 	priv->corona->update(&priv->tl); // Update Corona
 	priv->pcyl->update(&priv->tl);    // Update Palette Cycler
 
-	VisVideo *vidcorona = visual_video_new ();
-	visual_video_set_depth (vidcorona, VISUAL_VIDEO_DEPTH_8BIT);
-	visual_video_set_dimension (vidcorona, video->width, video->height);
-	visual_video_set_buffer (vidcorona, priv->corona->getSurface());
+	VisVideo *vidcorona = visual_video_new_wrap_buffer (priv->corona->getSurface(),
+	                                                    FALSE,
+	                                                    visual_video_get_width (video),
+	                                                    visual_video_get_height (video),
+	                                                    VISUAL_VIDEO_DEPTH_8BIT);
 	visual_video_mirror (video, vidcorona, VISUAL_VIDEO_MIRROR_Y);
-	visual_object_unref (VISUAL_OBJECT (vidcorona));
+	visual_video_unref (vidcorona);
 
 	return 0;
 }

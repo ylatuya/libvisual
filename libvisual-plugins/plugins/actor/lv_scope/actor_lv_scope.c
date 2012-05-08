@@ -29,7 +29,7 @@ VISUAL_PLUGIN_API_VERSION_VALIDATOR
 
 typedef struct {
 	VisPalette *pal;
-	VisBuffer	pcm;
+	VisBuffer  *pcm;
 } ScopePrivate;
 
 static int lv_scope_init (VisPluginData *plugin);
@@ -83,7 +83,7 @@ static int lv_scope_init (VisPluginData *plugin)
 
 	priv->pal = visual_palette_new (256);
 
-	visual_buffer_init_allocate (&priv->pcm, sizeof (float) * PCM_SIZE, visual_buffer_destroyer_free);
+	priv->pcm = visual_buffer_new_allocate (sizeof (float) * PCM_SIZE);
 
 	return 0;
 }
@@ -94,7 +94,7 @@ static int lv_scope_cleanup (VisPluginData *plugin)
 
 	visual_palette_free (priv->pal);
 
-	visual_object_unref (VISUAL_OBJECT (&priv->pcm));
+	visual_buffer_free (priv->pcm);
 
 	visual_mem_free (priv);
 
@@ -169,38 +169,43 @@ static int lv_scope_render (VisPluginData *plugin, VisVideo *video, VisAudio *au
 	VisColor col;
 	float *pcmbuf;
 	int i, y, y_old;
+	int video_width, video_height, video_pitch;
 	uint8_t *buf;
 
-	if (video == NULL)
+	video_width  = visual_video_get_width  (video);
+	video_height = visual_video_get_height (video);
+	video_pitch  = visual_video_get_pitch  (video);
+
+	if (!video)
 		return -1;
 
-	y = video->height >> 1;
+	y = video_height >> 1;
 
-	visual_audio_get_sample_mixed (audio, &priv->pcm, TRUE, 2,
+	visual_audio_get_sample_mixed (audio, priv->pcm, TRUE, 2,
 			VISUAL_AUDIO_CHANNEL_LEFT,
 			VISUAL_AUDIO_CHANNEL_RIGHT,
 			1.0,
 			1.0);
 
-	pcmbuf = visual_buffer_get_data (&priv->pcm);
+	pcmbuf = visual_buffer_get_data (priv->pcm);
 
 	visual_color_set (&col, 0, 0, 0);
 	visual_video_fill_color (video, &col);
 
 	buf = (uint8_t *) visual_video_get_pixels (video);
 
-	y_old = video->height / 2;
-	for (i = 0; i < video->width; i++) {
+	y_old = video_height / 2;
+	for (i = 0; i < video_width; i++) {
 		int j;
 
-		y = (video->height / 2) + (pcmbuf[(i >> 1) % PCM_SIZE] * (video->height / 4));
+		y = (video_height / 2) + (pcmbuf[(i >> 1) % PCM_SIZE] * (video_height / 4));
 
 		if (y > y_old) {
 			for (j = y_old; j < y; j++)
-				buf[(j * video->pitch) + i] = 255;
+				buf[(j * video_pitch) + i] = 255;
 		} else {
 			for (j = y; j < y_old; j++)
-				buf[(j * video->pitch) + i] = 255;
+				buf[(j * video_pitch) + i] = 255;
 		}
 	}
 

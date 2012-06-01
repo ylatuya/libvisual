@@ -25,7 +25,6 @@
 #include "lv_actor.h"
 #include "lv_common.h"
 #include "lv_plugin_registry.h"
-#include "gettext.h"
 #include <cstring>
 #include <vector>
 #include <functional>
@@ -43,13 +42,13 @@ namespace {
 } // LV namespace
 
 
-extern "C" {
-
 static void actor_dtor (VisObject *object);
 
 static VisActorPlugin *get_actor_plugin (VisActor *actor);
 static int negotiate_video_with_unsupported_depth (VisActor *actor, VisVideoDepth rundepth, int noevent, int forced);
 static int negotiate_video (VisActor *actor, int noevent);
+
+static int visual_actor_init (VisActor *actor, const char *actorname);
 
 static void actor_dtor (VisObject *object)
 {
@@ -215,7 +214,7 @@ int visual_actor_init (VisActor *actor, const char *actorname)
     visual_return_val_if_fail (actor != NULL, -VISUAL_ERROR_ACTOR_NULL);
 
     if (actorname && get_actor_plugin_list ().empty ()) {
-        visual_log (VISUAL_LOG_ERROR, _("the plugin list is empty"));
+        visual_log (VISUAL_LOG_ERROR, "the plugin list is empty");
 
         return -VISUAL_ERROR_PLUGIN_NO_LIST;
     }
@@ -287,7 +286,7 @@ VisPalette *visual_actor_get_palette (VisActor *actor)
 
     if (actplugin == NULL) {
         visual_log (VISUAL_LOG_ERROR,
-            _("The given actor does not reference any actor plugin"));
+            "The given actor does not reference any actor plugin");
         return NULL;
     }
 
@@ -473,7 +472,7 @@ void visual_actor_run (VisActor *actor, VisAudio *audio)
     plugin = visual_actor_get_plugin (actor);
 
     if (!actplugin) {
-        visual_log (VISUAL_LOG_ERROR, _("The given actor does not reference any actor plugin"));
+        visual_log (VISUAL_LOG_ERROR, "The given actor does not reference any actor plugin");
         return;
     }
 
@@ -523,5 +522,3 @@ void visual_actor_run (VisActor *actor, VisAudio *audio)
         }
     }
 }
-
-} // C extern

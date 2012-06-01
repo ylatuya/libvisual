@@ -21,11 +21,12 @@
 
 #include "config.h"
 #include "lv_audio.h"
+#include "private/lv_audio_convert.hpp"
 #include "lv_common.h"
 #include "lv_fourier.h"
 #include "lv_math.h"
 #include "lv_ringbuffer.h"
-#include "private/lv_audio_convert.hpp"
+#include "lv_time.h"
 #include <cstdarg>
 #include <map>
 #include <vector>

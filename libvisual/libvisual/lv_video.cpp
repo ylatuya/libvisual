@@ -55,6 +55,7 @@ namespace LV {
       , pitch   (0)
       , buffer  (Buffer::create ())
       , parent  (0)
+      , compose_type (VISUAL_VIDEO_COMPOSE_TYPE_NONE)
   {}
 
   Video::Impl::~Impl ()
@@ -89,7 +90,8 @@ namespace LV {
 
       self->set_depth (depth);
       self->set_dimension (width, height);
-      self->allocate_buffer ();
+      if(depth != VISUAL_VIDEO_DEPTH_NONE)
+          self->allocate_buffer ();
 
       return self;
   }

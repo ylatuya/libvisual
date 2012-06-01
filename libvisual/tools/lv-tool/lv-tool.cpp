@@ -52,6 +52,7 @@ namespace {
   std::string input_name = DEFAULT_INPUT;
   std::string morph_name = DEFAULT_MORPH;
   std::string driver_name = DEFAULT_DRIVER;
+  std::string exclude_actors;
 
   unsigned int width  = DEFAULT_WIDTH;
   unsigned int height = DEFAULT_HEIGHT;
@@ -111,7 +112,8 @@ namespace {
                   "\t--morph <morph>\t\t-m <morph>\tUse this morph plugin [%s]\n"
                   "\t--seed <seed>\t\t-s <seed>\tSet random seed\n"
                   "\t--fps <n>\t\t-f <n>\t\tLimit output to n frames per second (if display driver supports it) [%d]\n"
-                  "\t--framecount <n>\t-F <n>\t\tOutput n frames, then exit.\n\n",
+                  "\t--framecount <n>\t-F <n>\t\tOutput n frames, then exit.\n\n"
+                  "\t--exclude <actors>\t-x <actors>\tProvide a list of actors to exclude.\n\n",
                   "http://github.com/StarVisuals/libvisual",
                   name.c_str (),
                   width, height,
@@ -144,11 +146,12 @@ namespace {
 		  {"morph",       required_argument, 0, 'm'},
 		  {"fps",         required_argument, 0, 'f'},
 		  {"seed",        required_argument, 0, 's'},
+          {"exclude",     required_argument, 0, 'x'},
 		  {"framecount",  required_argument, 0, 'F'},
 		  {0,             0,                 0,  0 }
 	  };
 
-      while ((argument = getopt_long(argc, argv, "hpvD:d:i:a:m:f:s:F:", loptions, &index)) >= 0) {
+      while ((argument = getopt_long(argc, argv, "hpvD:d:i:a:m:f:s:F:x:", loptions, &index)) >= 0) {
 
           switch(argument) {
               // --help
@@ -232,6 +235,12 @@ namespace {
                   break;
               }
 
+              // --exclude
+              case 'x': {
+                  exclude_actors = optarg;
+                  break;
+              }
+
               // invalid argument
               case '?': {
                   print_help(argv[0]);
@@ -261,6 +270,9 @@ namespace {
       }
 
       actor_name = name;
+
+      if(strstr(exclude_actors.c_str(), name) != 0)
+        v_cycleActor(prev);
   }
 
   void v_cycleMorph ()

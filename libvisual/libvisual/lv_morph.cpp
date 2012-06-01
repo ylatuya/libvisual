@@ -25,7 +25,6 @@
 #include "lv_morph.h"
 #include "lv_common.h"
 #include "lv_plugin_registry.h"
-#include "gettext.h"
 
 namespace {
 
@@ -36,6 +35,8 @@ namespace {
   }
 
 } // anonymous namespace
+
+static int visual_morph_init (VisMorph *morph, const char *morphname);
 
 static void morph_dtor (VisObject *object);
 
@@ -105,7 +106,7 @@ int visual_morph_init (VisMorph *morph, const char *morphname)
     visual_return_val_if_fail (morph != NULL, -VISUAL_ERROR_MORPH_NULL);
 
     if (morphname && get_morph_plugin_list ().empty ()) {
-        visual_log (VISUAL_LOG_ERROR, _("the plugin list is NULL"));
+        visual_log (VISUAL_LOG_ERROR, "the plugin list is NULL");
 
         return -VISUAL_ERROR_PLUGIN_NO_LIST;
     }
@@ -253,7 +254,7 @@ int visual_morph_requests_audio (VisMorph *morph)
 
     if (morphplugin == NULL) {
         visual_log (VISUAL_LOG_ERROR,
-            _("The given morph does not reference any plugin"));
+            "The given morph does not reference any plugin");
 
         return -VISUAL_ERROR_MORPH_PLUGIN_NULL;
     }
@@ -274,7 +275,7 @@ int visual_morph_run (VisMorph *morph, VisAudio *audio, VisVideo *src1, VisVideo
 
     if (morphplugin == NULL) {
         visual_log (VISUAL_LOG_ERROR,
-            _("The given morph does not reference any plugin"));
+            "The given morph does not reference any plugin");
 
         return -VISUAL_ERROR_MORPH_PLUGIN_NULL;
     }

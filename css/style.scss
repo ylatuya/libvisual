@@ -31,8 +31,9 @@ p {
   margin-bottom: 1em;
 }
 
-pre {
+.code {
   font-family: $mono-font;
+  white-space: pre;
 }
 
 #page-wrapper {

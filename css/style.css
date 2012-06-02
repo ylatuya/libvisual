@@ -33,8 +33,9 @@ p {
   margin-bottom: 1em;
 }
 
-pre {
+.code {
   font-family: Courier New, monospace;
+  white-space: pre;
 }
 
 #page-wrapper {

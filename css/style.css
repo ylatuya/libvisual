@@ -1,6 +1,7 @@
 body {
   font: normal 15px/1.6em Helvetica, Arial, FreeSans, sans-serif;
   color: white;
+  background-color: black;
 }
 
 a {
@@ -36,10 +37,6 @@ p {
 .code {
   font-family: Courier New, monospace;
   white-space: pre;
-}
-
-#page-wrapper {
-  background-color: black;
 }
 
 #page {

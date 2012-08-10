@@ -1,5 +1,8 @@
-$sans-font: Helvetica, Arial, FreeSans, sans-serif;
-$mono-font: Courier New, monospace;
+@import url(http://fonts.googleapis.com/css?family=Comfortaa|Istok+Web|Droid+Sans+Mono);
+
+$sans-font: 'Istok Web', Helvetica, Arial, FreeSans, sans-serif;
+$mono-font: 'Droid Sans Mono', Courier New, monospace;
+$heading-font: 'Comfortaa', sans-serif;
 $highlight-color: #ff7f2a;
 
 // Font
@@ -20,6 +23,7 @@ a:hover {
 }
 
 h1, h2, h3, h4, h5, h6 {
+  font-family: $heading-font;
   color: $highlight-color;
   margin-bottom: 0.8em;
 }
@@ -33,7 +37,7 @@ p {
 }
 
 .code {
-  font-family: $mono-font;
+  font: 0.9em/1.5em $mono-font;
   white-space: pre;
 }
 
@@ -57,6 +61,7 @@ p {
   }
 
   .download {
+    font-family: $heading-font;
     display: block;
     position: absolute;
     left: 550px;
